@@ -8,4 +8,10 @@
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
+    <ItemGroup>
+      <Folder Include="Configurations\" />
+      <Folder Include="Data\" />
+      <Folder Include="Extensions\" />
+      <Folder Include="Repositories\" />
+    </ItemGroup>
 </Project>
