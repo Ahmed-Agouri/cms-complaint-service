@@ -1,3 +1,5 @@
+using ComplaintService.Application.Dtos;
+using ComplaintService.Application.Interfaces;
 using ComplaintService.Application.Models.Common;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,18 +10,30 @@ namespace ComplaintService.API.Controllers;
 public class ComplaintController : ControllerBase
 {
     private readonly ILogger<ComplaintController> _logger;
+    private readonly IComplaintService _complaintService;
     
-    public ComplaintController(ILogger<ComplaintController> logger)
+    public ComplaintController(
+        ILogger<ComplaintController> logger,
+        IComplaintService complaintService
+        
+        )
     {
         _logger = logger;
+        _complaintService = complaintService;
     }
     
     [HttpPost]
-    public IActionResult CreateComplaint([FromBody] object complaint)
+    public IActionResult CreateComplaint([FromBody] CreateComplaintDto complaint)
     {
-        _logger.LogInformation("Received complaint creation request.");
+        var result = _complaintService.CreateComplaint(CreateComplaintDto);
 
+        if (result)
+        {
+            return Ok(ApiResponse<string>.Ok("Complaint created successfully"));
+
+        }
         return Ok(ApiResponse<string>.Ok("Complaint created successfully"));
+
     }
 }
 

@@ -1,6 +1,6 @@
 namespace ComplaintService.Application.Enums;
 
-public enum StatusEnum
+public enum Status
 {
     Closed = 0,
     Open = 1,

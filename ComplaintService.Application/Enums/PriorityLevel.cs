@@ -1,6 +1,6 @@
 namespace ComplaintService.Application.Enums;
 
-public enum PriorityLevelEnum
+public enum PriorityLevel
 {
     Low = 1,
     Medium = 2,
