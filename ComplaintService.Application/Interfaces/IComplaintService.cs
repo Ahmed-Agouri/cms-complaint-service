@@ -5,5 +5,5 @@ namespace ComplaintService.Application.Interfaces;
 
 public interface IComplaintService
 {
-    public Task<ComplaintDto> CreateComplaintAsync(CreateComplaintDto dto);
+    public Task<ComplaintDto?> CreateComplaintAsync(CreateComplaintDto dto);
 }

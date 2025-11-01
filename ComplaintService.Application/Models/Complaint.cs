@@ -5,27 +5,19 @@ namespace ComplaintService.Application.Models;
 public class Complaint
 {
     public Guid Id { get; set; }
-    
-    public string Title { get; set; }
-    
-    public string Description { get; set; }
-    
-    public Status Status { get; set; }
-    
-    public PriorityLevel? Priority { get; set; }
-    
-    public ComplaintCategory? Category { get; set; }
-    
-    public DateTime? UpdatedAt { get; set; }
-    
-    public string? ResolutionNotes { get; set; }
+    public Guid UserId { get; set; }
 
-    
-    public Complaint(string title, string description)
-    {
-        Title = title;
-        Description = description;
-        Status = Status.Open;
-    }
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public Status Status { get; set; }
+    public PriorityLevel Priority { get; set; }
+    public ComplaintCategory Category { get; set; }
+    public Guid TenantId { get; set; }
+    public string? AssignedTo { get; set; }
+    public string? ResolutionNotes { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+
+    public Complaint() { }
     
 }

@@ -25,13 +25,13 @@ public class ComplaintController : ControllerBase
     [HttpPost]
     public IActionResult CreateComplaint([FromBody] CreateComplaintDto complaint)
     {
-        var result = _complaintService.CreateComplaint(CreateComplaintDto);
+        var result = _complaintService.CreateComplaintAsync(complaint);
 
-        if (result)
+        if (result == null)
         {
-            return Ok(ApiResponse<string>.Ok("Complaint created successfully"));
-
+            return BadRequest(ApiResponse<string>.Fail("Failed to create complaint."));
         }
+        
         return Ok(ApiResponse<string>.Ok("Complaint created successfully"));
 
     }
