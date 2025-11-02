@@ -23,9 +23,9 @@ public class ComplaintController : ControllerBase
     }
     
     [HttpPost]
-    public IActionResult CreateComplaint([FromBody] CreateComplaintDto complaint)
+    public async Task<IActionResult> CreateComplaint([FromBody] CreateComplaintDto complaint)
     {
-        var result = _complaintService.CreateComplaintAsync(complaint);
+        var result = await _complaintService.CreateComplaintAsync(complaint);
 
         if (result == null)
         {
