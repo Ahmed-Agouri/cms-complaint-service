@@ -6,7 +6,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>ComplaintService.Api</RootNamespace>
         <AssemblyName>ComplaintService.Api</AssemblyName>
-        <InvariantGlobalization>true</InvariantGlobalization>
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
@@ -22,6 +21,7 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         <PrivateAssets>all</PrivateAssets>
       </PackageReference>
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
     </ItemGroup>
 
 </Project>

@@ -11,7 +11,7 @@ public class ComplaintDto
     public PriorityLevel Priority { get; set; }
     public Status Status { get; set; }
     public Guid UserId { get; set; }
-    public Guid TenantId { get; set; }
+    public Tenant TenantId { get; set; }
     public string? AssignedTo { get; set; }
     public string? ResolutionNotes { get; set; }
     public DateTime CreatedAt { get; set; }

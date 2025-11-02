@@ -22,7 +22,6 @@ public class ComplaintService : IComplaintService
             try
             {
                   await _complaintRepository.AddAsync(complaint);
-                  await _complaintRepository.SaveChangesAsync();
             }
             catch (Exception e)
             {

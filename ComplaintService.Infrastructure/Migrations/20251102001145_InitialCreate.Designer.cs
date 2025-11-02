@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ComplaintService.Infrastructure.Migrations
 {
     [DbContext(typeof(ComplaintDbContext))]
-    [Migration("20251101233931_InitialCreate")]
+    [Migration("20251102001145_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -54,8 +54,8 @@ namespace ComplaintService.Infrastructure.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("TenantId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()

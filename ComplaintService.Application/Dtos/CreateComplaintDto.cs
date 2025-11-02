@@ -10,5 +10,5 @@ public class CreateComplaintDto
     public ComplaintCategory Category { get; set; } = ComplaintCategory.Other;
     
     public Guid UserId { get; set; }
-    public Guid TenantId { get; set; }
+    public Tenant TenantId { get; set; }
 }
