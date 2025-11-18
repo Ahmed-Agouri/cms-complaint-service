@@ -5,7 +5,7 @@ namespace ComplaintService.Application.Mapping;
 
 public static class ComplaintMapper
 {
-    public static Complaint ToEntity(CreateComplaintDto dto)
+    public static Complaint ToEntity(ComplaintDto dto)
     {
         return new Complaint
         {
