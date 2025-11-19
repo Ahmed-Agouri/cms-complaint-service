@@ -10,31 +10,26 @@ namespace ComplaintService.API.Controllers;
 [Route("api/[controller]")]
 public class ComplaintController : ControllerBase
 {
-    private readonly ILogger<ComplaintController> _logger;
     private readonly IComplaintService _complaintService;
     
     public ComplaintController(
-        ILogger<ComplaintController> logger,
         IComplaintService complaintService
-        
         )
     {
-        _logger = logger;
         _complaintService = complaintService;
     }
     
     [HttpPost]
-    public async Task<IActionResult> CreateComplaint([FromBody] CreateComplaintDto CreateComplaintDto)
+    public async Task<IActionResult> CreateComplaint([FromBody] CreateComplaintDto dto)
     {
-        var result = await _complaintService.CreateComplaintAsync(CreateComplaintDto);
+        var result = await _complaintService.CreateComplaintAsync(dto);
 
         if (result == null)
         {
-            return NotFound(ApiResponse<string>.Fail("Failed to create complaint."));
-
+            return BadRequest(ApiResponse<string>.Fail("Failed to create complaint."));
         }
         
-        return Ok(ApiResponse<string>.Ok("Complaint created successfully"));
+        return Ok(ApiResponse<ComplaintDto>.Ok(result));
 
     }
 
@@ -43,11 +38,11 @@ public class ComplaintController : ControllerBase
     {
         var result = await _complaintService.GetComplaintsAsync();
 
-        if (result == null || !result.Any())
+        if (!result.Any())
         {
             return NotFound(ApiResponse<string>.Fail("No complaints found."));
         }
-        
+
         return Ok(ApiResponse<List<ComplaintDto>>.Ok(result));
     }
 
@@ -64,11 +59,11 @@ public class ComplaintController : ControllerBase
         return Ok(ApiResponse<ComplaintDto>.Ok(result));
     }
 
-    [HttpPost("{id:guid}")]
+    [HttpPut("{id:guid}")]
 
-    public async Task<IActionResult> UpdateComplaint(Guid id, UpdateComplaintDto updateComplaintDto)
+    public async Task<IActionResult> UpdateComplaint(Guid id, [FromBody] UpdateComplaintDto dto)
     {
-        var result = await _complaintService.UpdateComplaintAsync(id, updateComplaintDto);
+        var result = await _complaintService.UpdateComplaintAsync(id, dto);
 
         if (result == null)
         {
@@ -78,7 +73,7 @@ public class ComplaintController : ControllerBase
         return Ok(ApiResponse<ComplaintDto>.Ok(result));
     }
 
-    [HttpDelete]
+    [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteComplaint(Guid id)
     {
         var result = await _complaintService.DeleteComplaintAsync(id);

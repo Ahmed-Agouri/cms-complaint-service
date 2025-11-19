@@ -2,6 +2,7 @@ using ComplaintService.Application.Dtos;
 using ComplaintService.Application.Enums;
 using ComplaintService.Application.Interfaces;
 using ComplaintService.Application.Mapping;
+using ComplaintService.Application.Models;
 
 namespace ComplaintService.Application.Services;
 
@@ -16,69 +17,69 @@ public class ComplaintService : IComplaintService
             _complaintRepository = complaintRepository;
       }
       
-      public async Task<CreateComplaintDto?> CreateComplaintAsync(CreateComplaintDto createComplaintDto)
+      public async Task<ComplaintDto?> CreateComplaintAsync(CreateComplaintDto dto)
       {
-            var complaint = ComplaintMapper.ToEntity(createComplaintDto);
-            try 
+            try
             {
+                  var complaint = ComplaintMapper.CreateDtoToEntity(dto);
+
                   await _complaintRepository.AddAsync(complaint);
+
                   return ComplaintMapper.ToDto(complaint);
             }
             catch (Exception e)
             {
-                  Console.WriteLine(e);
+                  Console.WriteLine($"[Error] Failed to create complaint: {e.Message}");
                   return null;
             }
-
       }
       
-      public async Task <List<ComplaintDto?>> GetComplaintsAsync()
-      { 
-            try
-            { 
-                  var complaints = await _complaintRepository.GetAllAsync();
-                  return complaints.Select(ComplaintMapper.ToDto).ToList();
-            } 
-            catch (Exception e) 
-            { 
-                  Console.WriteLine($"[Error] Failed to fetch complaints: {e.Message}");
-                  throw; 
-            }
-      }
-
-      public async Task<ComplaintDto> GetComplaintByIdAsync(Guid id)
+      public async Task<List<ComplaintDto?>> GetComplaintsAsync()
       {
             try
             {
-                  var complaint = await _complaintRepository.GetComplaintById(id);
-                  return ComplaintMapper.ToDto(complaint);
+                  var complaints = await _complaintRepository.GetAllAsync();
+                  return complaints.Select(ComplaintMapper.ToDto).ToList();
             }
             catch (Exception e)
             {
-                  Console.WriteLine($"[Error] Failed to fetch complaint by id ({id}): {e.Message}");
+                  Console.WriteLine($"[Error] Failed to fetch complaints: {e.Message}");
                   throw;
             }
       }
 
-      public async Task<ComplaintDto> UpdateComplaintAsync(Guid id,UpdateComplaintDto complaintDto)
+      public async Task<ComplaintDto?> GetComplaintByIdAsync(Guid id)
       {
-            
+            try
+            {
+                  var complaint = await _complaintRepository.GetComplaintById(id);
+
+                  return complaint == null ? null : ComplaintMapper.ToDto(complaint);
+            }
+            catch (Exception e)
+            {
+                  Console.WriteLine($"[Error] Failed to fetch complaint by ID ({id}): {e.Message}");
+                  throw;
+            }
+      }
+
+      public async Task<ComplaintDto?> UpdateComplaintAsync(Guid id, UpdateComplaintDto complaintDto)
+      {
             try
             {
                   var existing = await _complaintRepository.GetComplaintById(id);
 
                   if (existing == null)
                         return null;
-                  
-                  ApplyUpdates(existing, complaintDto);
-                  _complaintRepository.UpdateComplaint();
 
-                  await _context.SaveChangesAsync();
-                  return existing;
+                  ApplyUpdates(existing, complaintDto);
+                  var updated = await _complaintRepository.UpdateComplaint(existing);
+
+                  return ComplaintMapper.ToDto(updated);
             }
             catch (Exception e)
             {
-                  Console.WriteLine($"[Error] Failed to Update complaint by id ({id}): {e.Message}");
+                  Console.WriteLine($"[Error] Failed to update complaint ({id}): {e.Message}");
                   throw;
             }
       }
@@ -95,8 +96,9 @@ public class ComplaintService : IComplaintService
                   throw;
             }
       }
+      
 
-      public static void ApplyUpdates(Complaint entity, UpdateComplaintDto dto)
+      private static void ApplyUpdates(Complaint entity, UpdateComplaintDto dto)
       {
             if (!string.IsNullOrWhiteSpace(dto.Title))
                   entity.Title = dto.Title;

@@ -35,16 +35,11 @@ public class ComplaintRepository : IComplaintRepository
             .FirstOrDefaultAsync(c => c.Id == id);    
     }
 
-    public async Task<Complaint?> UpdateComplaint(Guid id,Complaint complaint)
+    public async Task<Complaint?> UpdateComplaint(Complaint complaint)
     {
-        var existing = await GetComplaintById(id);
-
-        if (existing == null)
-            return null;
-        
+        _context.Complaints.Update(complaint);
         await _context.SaveChangesAsync();
-
-        return existing;
+        return complaint;
     }
     
     public async Task<DeleteStatus> DeleteComplaint(Guid id)
