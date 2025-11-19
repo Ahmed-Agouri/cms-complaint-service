@@ -1,4 +1,5 @@
 using ComplaintService.Application.Interfaces;
+using ComplaintService.Application.Services;
 using ComplaintService.Infrastructure.Data;
 using ComplaintService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,8 @@ public class Program
     
         //Services
         builder.Services.AddScoped<IComplaintService, Application.Services.ComplaintService>();
+        builder.Services.AddScoped<IResolutionService, ResolutionService>();
+
         builder.Services.AddScoped<IComplaintRepository, ComplaintRepository>();
 
 

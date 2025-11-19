@@ -1,4 +1,5 @@
 using ComplaintService.Application.Dtos;
+using ComplaintService.Application.Dtos.Complaint;
 using ComplaintService.Application.Enums;
 using ComplaintService.Application.Interfaces;
 using ComplaintService.Application.Mapping;
