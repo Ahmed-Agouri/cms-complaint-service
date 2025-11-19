@@ -41,11 +41,9 @@ public class ComplaintRepository : IComplaintRepository
 
         if (existing == null)
             return null;
-
-
-        _context.Entry(existing).CurrentValues.SetValues(complaint);
-
+        
         await _context.SaveChangesAsync();
+
         return existing;
     }
     

@@ -16,12 +16,13 @@ public class ComplaintService : IComplaintService
             _complaintRepository = complaintRepository;
       }
       
-      public async Task<ComplaintDto?> CreateComplaintAsync(ComplaintDto complaintDto)
+      public async Task<CreateComplaintDto?> CreateComplaintAsync(CreateComplaintDto createComplaintDto)
       {
-            var complaint = ComplaintMapper.ToEntity(complaintDto);
-            try
+            var complaint = ComplaintMapper.ToEntity(createComplaintDto);
+            try 
             {
                   await _complaintRepository.AddAsync(complaint);
+                  return ComplaintMapper.ToDto(complaint);
             }
             catch (Exception e)
             {
@@ -29,7 +30,6 @@ public class ComplaintService : IComplaintService
                   return null;
             }
 
-            return ComplaintMapper.ToDto(complaint);
       }
       
       public async Task <List<ComplaintDto?>> GetComplaintsAsync()
@@ -60,14 +60,21 @@ public class ComplaintService : IComplaintService
             }
       }
 
-      public async Task<ComplaintDto> UpdateComplaintAsync(Guid id,ComplaintDto complaintDto)
+      public async Task<ComplaintDto> UpdateComplaintAsync(Guid id,UpdateComplaintDto complaintDto)
       {
             
             try
             {
-                  var complaint = ComplaintMapper.ToEntity(complaintDto);
-                  var updatedComplaint = await _complaintRepository.UpdateComplaint(id, complaint);
-                  return ComplaintMapper.ToDto(updatedComplaint);
+                  var existing = await _complaintRepository.GetComplaintById(id);
+
+                  if (existing == null)
+                        return null;
+                  
+                  ApplyUpdates(existing, complaintDto);
+                  _complaintRepository.UpdateComplaint();
+
+                  await _context.SaveChangesAsync();
+                  return existing;
             }
             catch (Exception e)
             {
@@ -89,7 +96,31 @@ public class ComplaintService : IComplaintService
             }
       }
 
+      public static void ApplyUpdates(Complaint entity, UpdateComplaintDto dto)
+      {
+            if (!string.IsNullOrWhiteSpace(dto.Title))
+                  entity.Title = dto.Title;
 
+            if (!string.IsNullOrWhiteSpace(dto.Description))
+                  entity.Description = dto.Description;
+
+            if (dto.Priority.HasValue)
+                  entity.Priority = dto.Priority.Value;
+
+            if (dto.Category.HasValue)
+                  entity.Category = dto.Category.Value;
+
+            if (dto.Status.HasValue)
+                  entity.Status = dto.Status.Value;
+
+            if (!string.IsNullOrWhiteSpace(dto.AssignedTo))
+                  entity.AssignedTo = dto.AssignedTo;
+
+            if (!string.IsNullOrWhiteSpace(dto.ResolutionNotes))
+                  entity.ResolutionNotes = dto.ResolutionNotes;
+
+            entity.UpdatedAt = DateTime.UtcNow;
+      }
 
 
 }

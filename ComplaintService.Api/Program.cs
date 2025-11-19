@@ -11,9 +11,13 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        // For when i use azure hosted server/db
+        // builder.Services.AddDbContext<ComplaintDbContext>(options =>
+        //     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    
         builder.Services.AddDbContext<ComplaintDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+            options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    
         builder.Services.AddControllers();
 
         builder.Services.AddEndpointsApiExplorer();

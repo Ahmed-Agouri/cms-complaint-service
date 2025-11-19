@@ -5,7 +5,7 @@ namespace ComplaintService.Application.Mapping;
 
 public static class ComplaintMapper
 {
-    public static Complaint ToEntity(ComplaintDto dto)
+    public static Complaint CreateDtoToEntity(CreateComplaintDto dto)
     {
         return new Complaint
         {
@@ -20,22 +20,16 @@ public static class ComplaintMapper
         };
     }
 
-    public static ComplaintDto ToDto(Complaint complaint)
+    public static CreateComplaintDto ToDto(Complaint complaint)
     {
-        return new ComplaintDto
+        return new CreateComplaintDto
         {
-            Id = complaint.Id,
             Title = complaint.Title,
             Description = complaint.Description,
             Category = complaint.Category,
             Priority = complaint.Priority,
-            Status = complaint.Status,
             UserId = complaint.UserId,
             TenantId = complaint.TenantId,
-            AssignedTo = complaint.AssignedTo,
-            ResolutionNotes = complaint.ResolutionNotes,
-            CreatedAt = complaint.CreatedAt,
-            UpdatedAt = complaint.UpdatedAt
         };
     }
     

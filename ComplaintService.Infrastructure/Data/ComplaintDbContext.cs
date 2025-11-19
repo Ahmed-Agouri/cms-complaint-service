@@ -17,7 +17,6 @@ public class ComplaintDbContext: DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Example constraints
         modelBuilder.Entity<Complaint>(entity =>
         {
             entity.HasKey(c => c.Id);

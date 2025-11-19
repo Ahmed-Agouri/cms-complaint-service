@@ -24,12 +24,14 @@ public class ComplaintController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<IActionResult> CreateComplaint([FromBody] ComplaintDto complaint)
+    public async Task<IActionResult> CreateComplaint([FromBody] CreateComplaintDto CreateComplaintDto)
     {
-        var result = await _complaintService.CreateComplaintAsync(complaint);
+        var result = await _complaintService.CreateComplaintAsync(CreateComplaintDto);
 
         if (result == null)
         {
+            return NotFound(ApiResponse<string>.Fail("Failed to create complaint."));
+
         }
         
         return Ok(ApiResponse<string>.Ok("Complaint created successfully"));
@@ -64,9 +66,9 @@ public class ComplaintController : ControllerBase
 
     [HttpPost("{id:guid}")]
 
-    public async Task<IActionResult> UpdateComplaint(Guid id, ComplaintDto complaint)
+    public async Task<IActionResult> UpdateComplaint(Guid id, UpdateComplaintDto updateComplaintDto)
     {
-        var result = await _complaintService.UpdateComplaintAsync(id, complaint);
+        var result = await _complaintService.UpdateComplaintAsync(id, updateComplaintDto);
 
         if (result == null)
         {
