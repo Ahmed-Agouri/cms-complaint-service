@@ -1,4 +1,5 @@
 using ComplaintService.Application.Dtos;
+using ComplaintService.Application.Dtos.complaint;
 using ComplaintService.Application.Dtos.Complaint;
 using ComplaintService.Application.Enums;
 using ComplaintService.Application.Interfaces;
@@ -18,7 +19,7 @@ public class ComplaintService : IComplaintService
             _complaintRepository = complaintRepository;
       }
       
-      public async Task<ComplaintDto?> CreateComplaintAsync(CreateComplaintDto dto)
+      public async Task<ComplaintDto?> CreateComplaintAsync(CreateComplaintDto dto,Tenant tenantId)
       {
             try
             {
@@ -34,7 +35,12 @@ public class ComplaintService : IComplaintService
                   return null;
             }
       }
-      
+
+      public Task<ComplaintDto?> CreateComplaintAsync(CreateComplaintDto dto)
+      {
+            throw new NotImplementedException();
+      }
+
       public async Task<List<ComplaintDto?>> GetComplaintsAsync()
       {
             try

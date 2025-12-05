@@ -1,6 +1,6 @@
 using ComplaintService.Application.Enums;
 
-namespace ComplaintService.Application.Dtos;
+namespace ComplaintService.Application.Dtos.complaint;
 
 public class CreateComplaintDto
 {

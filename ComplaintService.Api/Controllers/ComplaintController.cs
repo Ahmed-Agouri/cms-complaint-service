@@ -1,4 +1,5 @@
 using ComplaintService.Application.Dtos;
+using ComplaintService.Application.Dtos.complaint;
 using ComplaintService.Application.Dtos.Complaint;
 using ComplaintService.Application.Enums;
 using ComplaintService.Application.Interfaces;
@@ -21,9 +22,9 @@ public class ComplaintController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<IActionResult> CreateComplaint([FromBody] CreateComplaintDto dto)
+    public async Task<IActionResult> CreateComplaint([FromBody] CreateComplaintDto dto, Tenant tenantId)
     {
-        var result = await _complaintService.CreateComplaintAsync(dto);
+        var result = await _complaintService.CreateComplaintAsync(dto,tenantId);
 
         if (result == null)
         {
