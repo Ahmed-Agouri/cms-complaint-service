@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using ComplaintService.Application.Interfaces;
 using ComplaintService.Application.Services;
 using ComplaintService.Infrastructure.Data;
@@ -19,10 +20,14 @@ public class Program
         builder.Services.AddDbContext<ComplaintDbContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
     
-        builder.Services.AddControllers();
+        builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        // builder.Services.AddEndpointsApiExplorer();
+        // builder.Services.AddSwaggerGen();
         
         builder.Services.AddCors(options =>
         {
@@ -47,8 +52,12 @@ public class Program
 
         if (app.Environment.IsDevelopment())
         {
-            app.UseSwagger();
-            app.UseSwaggerUI();
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ComplaintDbContext>();
+                dbContext.Database.Migrate();
+                Console.WriteLine("✅ Complaint Service: Database migrated successfully");
+            }
         }
         
         app.UseCors("AllowAll");

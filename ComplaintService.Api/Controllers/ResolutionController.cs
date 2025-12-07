@@ -20,7 +20,9 @@ public class ResolutionController:ControllerBase
     
     
     [HttpPost("{id:guid}")]
-    public async Task<IActionResult> AddResolution(Guid id, Tenant tenantId,[FromBody] UpdateResolutionDto dto)
+    public async Task<IActionResult> AddResolution(Guid id, 
+        [FromHeader(Name = "X-Tenant-Id")] Guid tenantId,
+        [FromBody] UpdateResolutionDto dto)
     {
         var result = await _resolutionService.AddResolutionAsync(id,tenantId, dto);
 
@@ -31,7 +33,9 @@ public class ResolutionController:ControllerBase
     }
     
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateResolution(Guid id, Tenant tenantId,[FromBody] UpdateResolutionDto dto)
+    public async Task<IActionResult> UpdateResolution(Guid id, 
+        [FromHeader(Name = "X-Tenant-Id")] Guid tenantId,
+        [FromBody] UpdateResolutionDto dto)
     {
         var result = await _resolutionService.UpdateResolutionAsync(id, tenantId,dto);
 
@@ -42,7 +46,7 @@ public class ResolutionController:ControllerBase
     }
     
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> ClearResolution(Guid id,Tenant tenantId)
+    public async Task<IActionResult> ClearResolution(Guid id,[FromHeader(Name = "X-Tenant-Id")] Guid tenantId)
     {
         var success = await _resolutionService.ClearResolutionAsync(id, tenantId);
 

@@ -21,24 +21,23 @@ public class ComplaintController : ControllerBase
         _complaintService = complaintService;
     }
     
-    [HttpPost]
-    public async Task<IActionResult> CreateComplaint([FromBody] CreateComplaintDto dto, Tenant tenantId)
-    {
-        var result = await _complaintService.CreateComplaintAsync(dto,tenantId);
+[HttpPost]
+public async Task<IActionResult> CreateComplaint(
+    [FromBody] CreateComplaintDto dto,
+    [FromHeader(Name = "X-Tenant-Id")] Guid tenantId)
+{
+    var result = await _complaintService.CreateComplaintAsync(dto, tenantId);
 
-        if (result == null)
-        {
-            return BadRequest(ApiResponse<string>.Fail("Failed to create complaint."));
-        }
-        
-        return Ok(ApiResponse<ComplaintDto>.Ok(result));
+    if (result == null)
+        return BadRequest(ApiResponse<string>.Fail("Failed to create complaint."));
 
-    }
+    return Ok(ApiResponse<ComplaintDto>.Ok(result));
+}
 
     [HttpGet]
-    public async Task<IActionResult> GetAllComplaints()
+    public async Task<IActionResult> GetAllComplaints([FromHeader(Name = "X-Tenant-Id")] Guid tenantId)
     {
-        var result = await _complaintService.GetComplaintsAsync();
+        var result = await _complaintService.GetComplaintsAsync(tenantId);
 
         if (!result.Any())
         {
@@ -49,9 +48,9 @@ public class ComplaintController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetComplaintById(Guid id)
+    public async Task<IActionResult> GetComplaintById(Guid id, [FromHeader(Name = "X-Tenant-Id")] Guid tenantId)
     {
-        var result = await _complaintService.GetComplaintByIdAsync(id);
+        var result = await _complaintService.GetComplaintByIdAsync(id, tenantId);
 
         if (result == null)
         {
@@ -63,9 +62,10 @@ public class ComplaintController : ControllerBase
 
     [HttpPut("{id:guid}")]
 
-    public async Task<IActionResult> UpdateComplaint(Guid id, [FromBody] UpdateComplaintDto dto)
+    public async Task<IActionResult> UpdateComplaint(Guid id, UpdateComplaintDto complaintDto,
+        [FromHeader(Name = "X-Tenant-Id")] Guid tenantId)
     {
-        var result = await _complaintService.UpdateComplaintAsync(id, dto);
+        var result = await _complaintService.UpdateComplaintAsync(id, complaintDto, tenantId);
 
         if (result == null)
         {
@@ -76,9 +76,9 @@ public class ComplaintController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> DeleteComplaint(Guid id)
+    public async Task<IActionResult> DeleteComplaint(Guid id,[FromHeader(Name = "X-Tenant-Id")] Guid tenantId )
     {
-        var result = await _complaintService.DeleteComplaintAsync(id);
+        var result = await _complaintService.DeleteComplaintAsync(id,tenantId);
 
         if (result == null)
         {
