@@ -15,11 +15,7 @@ public static class ComplaintMapper
             Title = dto.Title,
             Description = dto.Description,
             Priority = dto.Priority,
-            TenantId = dto.TenantId,
-            UserId = dto.UserId,
             Category = dto.Category,
-            CreatedAt = DateTime.UtcNow,
-            Status = Status.Open
         };
     }
 
@@ -39,8 +35,6 @@ public static class ComplaintMapper
             TenantId = complaint.TenantId,
             AssignedTo = complaint.AssignedTo,
             ResolutionNotes = complaint.ResolutionNotes,
-            CreatedAt = complaint.CreatedAt,
-            UpdatedAt = complaint.UpdatedAt
         };
     }
 

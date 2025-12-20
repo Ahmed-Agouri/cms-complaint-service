@@ -18,9 +18,9 @@ public class ResolutionService : IResolutionService
         _complaintRepository = complaintRepository;
     }
     
-    public async Task<ComplaintDto?> AddResolutionAsync(Guid complaintId, Tenant tenantId,UpdateResolutionDto dto)
+    public async Task<ComplaintDto?> AddResolutionAsync(Guid complaintId, Guid tenantId,UpdateResolutionDto dto)
     {
-        var complaint = await _complaintRepository.GetComplaintById(complaintId);
+        var complaint = await _complaintRepository.GetByIdAndTenantAsync(complaintId, tenantId);
         if (complaint == null) return null;
 
         complaint.ResolutionNotes = dto.ResolutionNotes;
@@ -32,9 +32,9 @@ public class ResolutionService : IResolutionService
         return ComplaintMapper.ToDto(complaint);
     }
     
-    public async Task<ComplaintDto?> UpdateResolutionAsync(Guid complaintId, Tenant tenantId,UpdateResolutionDto dto)
+    public async Task<ComplaintDto?> UpdateResolutionAsync(Guid complaintId, Guid tenantId,UpdateResolutionDto dto)
     {
-        var complaint = await _complaintRepository.GetComplaintById(complaintId);
+        var complaint = await _complaintRepository.GetByIdAndTenantAsync(complaintId, tenantId);
 
         if (complaint == null)
             return null;
@@ -55,9 +55,9 @@ public class ResolutionService : IResolutionService
         return ComplaintMapper.ToDto(complaint);
     }
     
-    public async Task<bool> ClearResolutionAsync(Guid complaintId,Tenant tenantId)
+    public async Task<bool> ClearResolutionAsync(Guid complaintId,Guid tenantId)
     {
-        var complaint = await _complaintRepository.GetComplaintById(complaintId);
+        var complaint = await _complaintRepository.GetByIdAndTenantAsync(complaintId, tenantId);
 
         if (complaint == null)
             return false;

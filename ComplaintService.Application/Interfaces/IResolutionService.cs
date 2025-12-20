@@ -7,7 +7,7 @@ namespace ComplaintService.Application.Interfaces;
 
 public interface IResolutionService
 {
-     Task<ComplaintDto?> AddResolutionAsync(Guid complaintId, Tenant tenantId,UpdateResolutionDto dto);
-     Task<ComplaintDto?> UpdateResolutionAsync(Guid complaintId, Tenant tenantId,UpdateResolutionDto dto);
-     Task<bool> ClearResolutionAsync(Guid complaintId, Tenant tenantId);
+     Task<ComplaintDto?> AddResolutionAsync(Guid complaintId, Guid tenantId,UpdateResolutionDto dto);
+     Task<ComplaintDto?> UpdateResolutionAsync(Guid complaintId, Guid tenantId,UpdateResolutionDto dto);
+     Task<bool> ClearResolutionAsync(Guid complaintId, Guid tenantId);
 }

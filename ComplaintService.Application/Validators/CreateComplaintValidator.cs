@@ -1,4 +1,5 @@
 using ComplaintService.Application.Dtos;
+using ComplaintService.Application.Dtos.complaint;
 using FluentValidation;
 
 namespace ComplaintService.Application.Validators;

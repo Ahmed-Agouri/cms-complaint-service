@@ -19,11 +19,17 @@ public class ComplaintService : IComplaintService
             _complaintRepository = complaintRepository;
       }
       
-      public async Task<ComplaintDto?> CreateComplaintAsync(CreateComplaintDto dto,Tenant tenantId)
+      public async Task<ComplaintDto?> CreateComplaintAsync(CreateComplaintDto dto,Guid tenantId,Guid userId)
       {
             try
             {
                   var complaint = ComplaintMapper.CreateDtoToEntity(dto);
+                  complaint.Id = Guid.NewGuid();
+                  complaint.UserId = userId;
+                  complaint.TenantId = tenantId;
+                  complaint.Status = Status.Open;
+                  complaint.CreatedAt = DateTime.UtcNow;
+                  complaint.UpdatedAt = DateTime.UtcNow;
 
                   await _complaintRepository.AddAsync(complaint);
 
@@ -36,16 +42,19 @@ public class ComplaintService : IComplaintService
             }
       }
 
-      public Task<ComplaintDto?> CreateComplaintAsync(CreateComplaintDto dto)
+      public async Task<List<ComplaintDto>> GetComplaintsByUserAsync(Guid userId, Guid tenantId)
       {
-            throw new NotImplementedException();
-      }
+            var complaints = await _complaintRepository.GetByUserAndTenantAsync(userId, tenantId);
 
-      public async Task<List<ComplaintDto?>> GetComplaintsAsync()
+            return complaints.Select(ComplaintMapper.ToDto).ToList();
+      }
+      
+      
+      public async Task<List<ComplaintDto?>> GetComplaintsAsync(Guid tenantId)
       {
             try
             {
-                  var complaints = await _complaintRepository.GetAllAsync();
+                  var complaints = await _complaintRepository.GetByTenantAsync(tenantId);
                   return complaints.Select(ComplaintMapper.ToDto).ToList();
             }
             catch (Exception e)
@@ -55,12 +64,11 @@ public class ComplaintService : IComplaintService
             }
       }
 
-      public async Task<ComplaintDto?> GetComplaintByIdAsync(Guid id)
+      public async Task<ComplaintDto?> GetComplaintByIdAsync(Guid id, Guid tenantId)
       {
             try
             {
-                  var complaint = await _complaintRepository.GetComplaintById(id);
-
+                  var complaint = await _complaintRepository.GetByIdAndTenantAsync(id, tenantId);
                   return complaint == null ? null : ComplaintMapper.ToDto(complaint);
             }
             catch (Exception e)
@@ -70,11 +78,11 @@ public class ComplaintService : IComplaintService
             }
       }
 
-      public async Task<ComplaintDto?> UpdateComplaintAsync(Guid id, UpdateComplaintDto complaintDto)
+      public async Task<ComplaintDto?> UpdateComplaintAsync(Guid id, UpdateComplaintDto complaintDto, Guid tenantId)
       {
             try
             {
-                  var existing = await _complaintRepository.GetComplaintById(id);
+                  var existing = await _complaintRepository.GetByIdAndTenantAsync(id, tenantId);
 
                   if (existing == null)
                         return null;
@@ -91,7 +99,7 @@ public class ComplaintService : IComplaintService
             }
       }
 
-      public Task<DeleteStatus> DeleteComplaintAsync(Guid id)
+      public Task<DeleteStatus> DeleteComplaintAsync(Guid id,Guid tenantId)
       {
             try
             {

@@ -1,9 +1,11 @@
+using System.Security.Claims;
 using ComplaintService.Application.Dtos;
 using ComplaintService.Application.Dtos.complaint;
 using ComplaintService.Application.Dtos.Complaint;
 using ComplaintService.Application.Enums;
 using ComplaintService.Application.Interfaces;
 using ComplaintService.Application.Models.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComplaintService.API.Controllers;
@@ -22,17 +24,20 @@ public class ComplaintController : ControllerBase
     }
     
 [HttpPost]
-public async Task<IActionResult> CreateComplaint(
-    [FromBody] CreateComplaintDto dto,
-    [FromHeader(Name = "X-Tenant-Id")] Guid tenantId)
-{
-    var result = await _complaintService.CreateComplaintAsync(dto, tenantId);
+    public async Task<IActionResult> CreateComplaint([FromBody] CreateComplaintDto dto, [FromHeader(Name = "X-Tenant-Id")] Guid tenantId)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        
+        if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            return Unauthorized(ApiResponse<string>.Fail("Invalid user identity"));
+        
+        var result = await _complaintService.CreateComplaintAsync(dto, tenantId,userId);
 
-    if (result == null)
-        return BadRequest(ApiResponse<string>.Fail("Failed to create complaint."));
+        if (result == null)
+            return BadRequest(ApiResponse<string>.Fail("Failed to create complaint."));
 
-    return Ok(ApiResponse<ComplaintDto>.Ok(result));
-}
+        return Ok(ApiResponse<ComplaintDto>.Ok(result));
+    }
 
     [HttpGet]
     public async Task<IActionResult> GetAllComplaints([FromHeader(Name = "X-Tenant-Id")] Guid tenantId)
@@ -86,6 +91,21 @@ public async Task<IActionResult> CreateComplaint(
         }
 
         return Ok(ApiResponse<DeleteStatus>.Ok(result));
+    }
+    
+    [Authorize]
+    [HttpGet("my")]
+    public async Task<IActionResult> GetMyComplaints(
+        [FromHeader(Name = "X-Tenant-Id")] Guid tenantId)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            return Unauthorized(ApiResponse<string>.Fail("Invalid user identity"));
+
+        var complaints = await _complaintService.GetComplaintsByUserAsync(userId, tenantId);
+
+        return Ok(ApiResponse<List<ComplaintDto>>.Ok(complaints));
     }
 }
 
