@@ -12,11 +12,11 @@ namespace ComplaintService.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ComplaintController : ControllerBase
+public class ComplaintsController : ControllerBase
 {
     private readonly IComplaintService _complaintService;
     
-    public ComplaintController(
+    public ComplaintsController(
         IComplaintService complaintService
         )
     {
