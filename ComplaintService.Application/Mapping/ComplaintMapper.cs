@@ -35,6 +35,8 @@ public static class ComplaintMapper
             TenantId = complaint.TenantId,
             AssignedTo = complaint.AssignedTo,
             ResolutionNotes = complaint.ResolutionNotes,
+            CreatedAt = complaint.CreatedAt,
+            UpdatedAt = complaint.UpdatedAt
         };
     }
 

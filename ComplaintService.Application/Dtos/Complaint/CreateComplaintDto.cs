@@ -8,6 +8,4 @@ public class CreateComplaintDto
     public string Description { get; set; } = string.Empty;
     public PriorityLevel Priority { get; set; } = PriorityLevel.Medium;
     public ComplaintCategory Category { get; set; } = ComplaintCategory.Other;
-    public Guid UserId { get; set; }
-    public Guid TenantId { get; set; }
 }

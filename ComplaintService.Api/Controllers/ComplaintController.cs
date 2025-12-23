@@ -15,12 +15,15 @@ namespace ComplaintService.API.Controllers;
 public class ComplaintsController : ControllerBase
 {
     private readonly IComplaintService _complaintService;
+    private readonly IAuditClient _auditClient;
     
     public ComplaintsController(
-        IComplaintService complaintService
+        IComplaintService complaintService, 
+        IAuditClient auditClient
         )
     {
         _complaintService = complaintService;
+        _auditClient = auditClient; 
     }
     
 [HttpPost]
@@ -36,6 +39,22 @@ public class ComplaintsController : ControllerBase
         if (result == null)
             return BadRequest(ApiResponse<string>.Fail("Failed to create complaint."));
 
+        try
+        {
+            await _auditClient.RecordAsync(new CreateAuditEntryDto
+            {
+                TenantId = tenantId,
+                UserId = userId,
+                ComplaintId = result.Id,
+                ActionType = "ComplaintCreated",
+                Description = $"Complaint '{result.Title}' was created"
+            });
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
         return Ok(ApiResponse<ComplaintDto>.Ok(result));
     }
 
@@ -48,7 +67,7 @@ public class ComplaintsController : ControllerBase
         {
             return NotFound(ApiResponse<string>.Fail("No complaints found."));
         }
-
+        
         return Ok(ApiResponse<List<ComplaintDto>>.Ok(result));
     }
 
@@ -76,6 +95,21 @@ public class ComplaintsController : ControllerBase
         {
             return NotFound(ApiResponse<string>.Fail($"No complaint with Id ({id}) found."));
         }
+        
+        try
+        {
+            await _auditClient.RecordAsync(new CreateAuditEntryDto
+            {
+                TenantId = tenantId,
+                ComplaintId = result.Id,
+                ActionType = "ComplaintCreated",
+                Description = $"Complaint '{result.Title}' was Updated"
+            });
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e);
+        }
 
         return Ok(ApiResponse<ComplaintDto>.Ok(result));
     }
@@ -89,7 +123,7 @@ public class ComplaintsController : ControllerBase
         {
             return NotFound(ApiResponse<string>.Fail($"No complaint with Id ({id}) found."));
         }
-
+        
         return Ok(ApiResponse<DeleteStatus>.Ok(result));
     }
     

@@ -1,3 +1,4 @@
+using ComplaintService.Application.Dtos;
 using ComplaintService.Application.Dtos.Complaint;
 using ComplaintService.Application.Dtos.Resolution;
 using ComplaintService.Application.Enums;
@@ -12,10 +13,17 @@ namespace ComplaintService.API.Controllers;
 public class ResolutionController:ControllerBase
 {
     private readonly IResolutionService _resolutionService;
+    private readonly IAuditClient _auditClient;
 
-    public ResolutionController(IResolutionService resolutionService)
+
+    public ResolutionController(
+        IResolutionService resolutionService,
+        IAuditClient auditClient
+
+        )
     {
         _resolutionService = resolutionService;
+        _auditClient = auditClient; 
     }
     
     
@@ -28,7 +36,23 @@ public class ResolutionController:ControllerBase
 
         if (result == null)
             return NotFound(ApiResponse<string>.Fail("Complaint not found"));
-
+        
+        try
+        {
+            await _auditClient.RecordAsync(new CreateAuditEntryDto
+            {
+                TenantId = tenantId,
+                UserId = null,
+                ComplaintId = result.Id,
+                ActionType = "ResolutionAdded",
+                Description = $"Resolution was added to complaint '{result.Title}'"
+            });
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        
         return Ok(ApiResponse<ComplaintDto>.Ok(result));
     }
     
@@ -42,6 +66,22 @@ public class ResolutionController:ControllerBase
         if (result == null)
             return NotFound(ApiResponse<string>.Fail("Complaint not found"));
 
+        try
+        {
+            await _auditClient.RecordAsync(new CreateAuditEntryDto
+            {
+                TenantId = tenantId,
+                UserId = null,
+                ComplaintId = result.Id,
+                ActionType = "ResolutionAdded",
+                Description = $"Resolution was Updated on complaint '{result.Title}'"
+            });
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        
         return Ok(ApiResponse<ComplaintDto>.Ok(result));
     }
     

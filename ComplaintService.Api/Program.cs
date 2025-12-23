@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using ComplaintService.Api.Middleware;
 using ComplaintService.Application.Interfaces;
 using ComplaintService.Application.Services;
+using ComplaintService.Infrastructure.Clients;
 using ComplaintService.Infrastructure.Data;
 using ComplaintService.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -37,10 +38,15 @@ public class Program
                     .AllowAnyHeader();
             });
         });
-
+        
+        builder.Services.AddHttpClient<IAuditClient, AuditClient>(client =>
+        {
+            client.BaseAddress = new Uri("http://localhost:5124");
+        });
         builder.Services.AddScoped<IComplaintService, Application.Services.ComplaintService>();
         builder.Services.AddScoped<IResolutionService, ResolutionService>();
         builder.Services.AddScoped<IComplaintRepository, ComplaintRepository>();
+        
 
         var jwtKey = builder.Configuration["Jwt:Key"];
         var jwtIssuer = builder.Configuration["Jwt:Issuer"];

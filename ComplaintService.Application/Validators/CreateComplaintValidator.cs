@@ -18,11 +18,5 @@ public class CreateComplaintValidator : AbstractValidator<CreateComplaintDto>
 
         RuleFor(x => x.Category)
             .IsInEnum().WithMessage("Invalid category.");
-
-        RuleFor(x => x.UserId)
-            .NotEmpty();
-
-        RuleFor(x => x.TenantId)
-            .NotEmpty();
     }
 }
