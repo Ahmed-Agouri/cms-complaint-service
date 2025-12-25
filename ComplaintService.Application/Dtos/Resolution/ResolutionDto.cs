@@ -9,4 +9,5 @@ public class ResolutionDto
     public string? AssignedTo { get; set; }
     public Status Status { get; set; }
     public DateTime UpdatedAt { get; set; }
+    
 }

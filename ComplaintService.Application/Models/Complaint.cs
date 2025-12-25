@@ -17,6 +17,8 @@ public class Complaint
     public string? ResolutionNotes { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
+    public int? Rating { get; set; }
+    public string? Feedback { get; set; }
 
     public Complaint() { }
     
