@@ -12,11 +12,13 @@ public class Complaint
     public Status Status { get; set; }
     public PriorityLevel Priority { get; set; }
     public ComplaintCategory Category { get; set; }
-    public Tenant TenantId { get; set; }
+    public Guid TenantId { get; set; }
     public string? AssignedTo { get; set; }
     public string? ResolutionNotes { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
+    public int? Rating { get; set; }
+    public string? Feedback { get; set; }
 
     public Complaint() { }
     

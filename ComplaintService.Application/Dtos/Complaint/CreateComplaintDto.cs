@@ -1,6 +1,6 @@
 using ComplaintService.Application.Enums;
 
-namespace ComplaintService.Application.Dtos;
+namespace ComplaintService.Application.Dtos.complaint;
 
 public class CreateComplaintDto
 {
@@ -8,7 +8,4 @@ public class CreateComplaintDto
     public string Description { get; set; } = string.Empty;
     public PriorityLevel Priority { get; set; } = PriorityLevel.Medium;
     public ComplaintCategory Category { get; set; } = ComplaintCategory.Other;
-    
-    public Guid UserId { get; set; }
-    public Tenant TenantId { get; set; }
 }

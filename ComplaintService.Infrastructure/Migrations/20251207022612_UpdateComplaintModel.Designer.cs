@@ -3,6 +3,7 @@ using System;
 using ComplaintService.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ComplaintService.Infrastructure.Migrations
 {
     [DbContext(typeof(ComplaintDbContext))]
-    partial class ComplaintDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251207022612_UpdateComplaintModel")]
+    partial class UpdateComplaintModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.11");
@@ -37,13 +40,7 @@ namespace ComplaintService.Infrastructure.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Feedback")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("Priority")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("Rating")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ResolutionNotes")
