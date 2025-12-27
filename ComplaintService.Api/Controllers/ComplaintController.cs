@@ -16,19 +16,24 @@ public class ComplaintsController : ControllerBase
 {
     private readonly IComplaintService _complaintService;
     private readonly IAuditClient _auditClient;
+    private readonly ITenantClient _tenantClient;
     
     public ComplaintsController(
         IComplaintService complaintService, 
-        IAuditClient auditClient
+        IAuditClient auditClient,
+        ITenantClient tenantClient
         )
     {
         _complaintService = complaintService;
         _auditClient = auditClient; 
+        _tenantClient = tenantClient;
     }
     
 [HttpPost]
     public async Task<IActionResult> CreateComplaint([FromBody] CreateComplaintDto dto, [FromHeader(Name = "X-Tenant-Id")] Guid tenantId)
     {
+        var validation = await ValidateTenant(tenantId);
+        if (validation != null) return validation;
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         
         if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
@@ -61,6 +66,8 @@ public class ComplaintsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllComplaints([FromHeader(Name = "X-Tenant-Id")] Guid tenantId)
     {
+        var validation = await ValidateTenant(tenantId);
+        if (validation != null) return validation;
         var result = await _complaintService.GetComplaintsAsync(tenantId);
 
         if (!result.Any())
@@ -74,6 +81,8 @@ public class ComplaintsController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetComplaintById(Guid id, [FromHeader(Name = "X-Tenant-Id")] Guid tenantId)
     {
+        var validation = await ValidateTenant(tenantId);
+        if (validation != null) return validation;
         var result = await _complaintService.GetComplaintByIdAsync(id, tenantId);
 
         if (result == null)
@@ -89,6 +98,8 @@ public class ComplaintsController : ControllerBase
     public async Task<IActionResult> UpdateComplaint(Guid id, UpdateComplaintDto complaintDto,
         [FromHeader(Name = "X-Tenant-Id")] Guid tenantId)
     {
+        var validation = await ValidateTenant(tenantId);
+        if (validation != null) return validation;
         var result = await _complaintService.UpdateComplaintAsync(id, complaintDto, tenantId);
 
         if (result == null)
@@ -117,6 +128,8 @@ public class ComplaintsController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteComplaint(Guid id,[FromHeader(Name = "X-Tenant-Id")] Guid tenantId )
     {
+        var validation = await ValidateTenant(tenantId);
+        if (validation != null) return validation;
         var result = await _complaintService.DeleteComplaintAsync(id,tenantId);
 
         if (result == null)
@@ -132,6 +145,8 @@ public class ComplaintsController : ControllerBase
     public async Task<IActionResult> GetMyComplaints(
         [FromHeader(Name = "X-Tenant-Id")] Guid tenantId)
     {
+        var validation = await ValidateTenant(tenantId);
+        if (validation != null) return validation;
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
@@ -140,6 +155,19 @@ public class ComplaintsController : ControllerBase
         var complaints = await _complaintService.GetComplaintsByUserAsync(userId, tenantId);
 
         return Ok(ApiResponse<List<ComplaintDto>>.Ok(complaints));
+    }
+    
+    private async Task<IActionResult?> ValidateTenant(Guid tenantId)
+    {
+        var tenant = await _tenantClient.GetTenantAsync(tenantId);
+
+        if (tenant == null)
+            return NotFound(ApiResponse<string>.Fail("Tenant not found"));
+
+        if (!string.Equals(tenant.Status, "Active", StringComparison.OrdinalIgnoreCase))
+            return StatusCode(403, ApiResponse<string>.Fail("Tenant is not active"));
+
+        return null;
     }
 }
 
