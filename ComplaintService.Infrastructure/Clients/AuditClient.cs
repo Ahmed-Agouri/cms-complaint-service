@@ -11,10 +11,13 @@ public class AuditClient : IAuditClient
     public AuditClient(HttpClient httpClient)
     {
         _httpClient = httpClient;
+        
+        var internalKey = "cms-dev-internal-key-dev"; 
+        _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-INTERNAL-KEY", internalKey);
     }
 
     public async Task RecordAsync(CreateAuditEntryDto dto)
     {
-        await _httpClient.PostAsJsonAsync("/api/audit", dto);
+        var response = await _httpClient.PostAsJsonAsync("/api/audit", dto);
     }
 }

@@ -43,7 +43,14 @@ public class ComplaintsController : ControllerBase
 
         if (result == null)
             return BadRequest(ApiResponse<string>.Fail("Failed to create complaint."));
-
+        await _auditClient.RecordAsync(new CreateAuditEntryDto
+        {
+            TenantId = tenantId,
+            UserId = userId,
+            ComplaintId = result.Id,
+            ActionType = "ComplaintCreated",
+            Description = $"Complaint '{result.Title}' was created"
+        });
         try
         {
             await _auditClient.RecordAsync(new CreateAuditEntryDto

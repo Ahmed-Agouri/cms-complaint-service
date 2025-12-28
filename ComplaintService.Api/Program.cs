@@ -41,10 +41,15 @@ public class Program
         
         builder.Services.AddHttpClient<IAuditClient, AuditClient>(client =>
         {
-            client.BaseAddress = new Uri("http://localhost:5124");
-            client.BaseAddress = new Uri("http://localhost:5182");
-
+            client.BaseAddress = new Uri("http://localhost:5003");
+            
         });
+        
+        builder.Services.AddHttpClient<ITenantClient, TenantClient>(client =>
+        {
+            client.BaseAddress = new Uri("http://localhost:5182");
+        });
+        
         builder.Services.AddScoped<IComplaintService, Application.Services.ComplaintService>();
         builder.Services.AddScoped<IResolutionService, ResolutionService>();
         builder.Services.AddScoped<IComplaintRepository, ComplaintRepository>();
