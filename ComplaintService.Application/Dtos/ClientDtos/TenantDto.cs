@@ -5,5 +5,5 @@ namespace ComplaintService.Application.Dtos.ClientDtos;
 public class TenantDto
 {
     public Guid TenantId { get; set; }
-    public Status Status { get; set; } = Status.Open;
+    public string Status { get; set; }
 }
