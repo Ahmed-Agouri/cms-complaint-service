@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ComplaintService.Infrastructure.Data;
 
-public class ComplaintDbContext: DbContext
+public class ComplaintDbContext : DbContext
 {
-    
+
     public ComplaintDbContext(DbContextOptions<ComplaintDbContext> options)
         : base(options)
     {
@@ -19,13 +19,23 @@ public class ComplaintDbContext: DbContext
 
         modelBuilder.Entity<Complaint>(entity =>
         {
-            entity.HasKey(c => c.Id);
+            entity.HasKey(c => c.ComplaintId);
             entity.Property(c => c.Title)
                 .IsRequired()
                 .HasMaxLength(200);
             entity.Property(c => c.Description)
                 .IsRequired()
                 .HasMaxLength(2000);
+            entity.Property(c => c.Status)
+            .HasConversion<string>()
+            .IsRequired();
+            entity.Property(c => c.Priority)
+                .HasConversion<string>()
+                .IsRequired();
+
+            entity.Property(c => c.Category)
+                .HasConversion<string>()
+                .IsRequired();
         });
     }
 }

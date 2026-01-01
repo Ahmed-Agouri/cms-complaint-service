@@ -4,7 +4,7 @@ namespace ComplaintService.Application.Models;
 
 public class Complaint
 {
-    public Guid Id { get; set; }
+    public Guid ComplaintId { get; set; }
     public Guid UserId { get; set; }
 
     public string Title { get; set; }

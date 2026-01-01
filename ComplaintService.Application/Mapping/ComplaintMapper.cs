@@ -25,7 +25,7 @@ public static class ComplaintMapper
     {
         return new ComplaintDto
         {
-            Id = complaint.Id,
+            Id = complaint.ComplaintId,
             Title = complaint.Title,
             Description = complaint.Description,
             Category = complaint.Category,

@@ -32,7 +32,7 @@ public class ComplaintRepository : IComplaintRepository
     public async Task<Complaint?> GetComplaintById(Guid id)
     { 
         return await _context.Complaints
-            .FirstOrDefaultAsync(c => c.Id == id);    
+            .FirstOrDefaultAsync(c => c.ComplaintId == id);    
     }
 
     public async Task<Complaint?> UpdateComplaint(Complaint complaint)
@@ -74,7 +74,7 @@ public class ComplaintRepository : IComplaintRepository
     public async Task<Complaint?> GetByIdAndTenantAsync(Guid id, Guid tenantId)
     {
         return await _context.Complaints
-            .FirstOrDefaultAsync(c => c.Id == id && c.TenantId == tenantId);
+            .FirstOrDefaultAsync(c => c.ComplaintId == id && c.TenantId == tenantId);
     }
 
 }
